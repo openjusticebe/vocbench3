@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 APP_NAME=vocbench3
 REPO=berzemus
+PORT=1979
+
 while getopts ":h" opt; do
   case ${opt} in
     h )
@@ -22,9 +24,9 @@ done
 
 
 test_docker_image() {
-     docker run -d --name "$1" -p 1979:80 -e HOST='0.0.0.0' $REPO/$APP_NAME:"$1"
+     docker run -d --name "$1" -p ${PORT}:${PORT} -e HOST='0.0.0.0' $REPO/$APP_NAME:"$1"
      sleep 2
-     url=http://localhost:1979/
+     url=http://localhost:${PORT}/
      status=$(curl --get --location --connect-timeout 5 --write-out %{http_code} --silent --output /dev/null ${url})
 
      if [[ $status == '200' ]]
@@ -67,7 +69,7 @@ case "$subcommand" in
 
   run)
     # Run the image
-    docker run -it --rm -p 6006:6006 ${REPO}/${APP_NAME}:${version}
+    docker run -it --rm -p ${PORT}:${PORT} ${REPO}/${APP_NAME}:${version}
     ;;
 
 esac
